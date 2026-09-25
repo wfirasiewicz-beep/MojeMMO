@@ -48,12 +48,46 @@ function Install-Stdb {
     Ok "SpacetimeDB pobrany do: $StdbDir"
 }
 
+# Klucze do podpisywania tokenow logowania graczy (JWT, ECDSA P-256), tworzone raz na tym komputerze.
+# Polecenie "spacetime start" robi to samo w swoim folderze konfiguracji; samodzielny serwer
+# wymaga podania ich wprost. Utrata kluczy = gracze musza zalozyc postacie od nowa.
+$KeyDir  = Join-Path $Here "klucze"
+$PrivKey = Join-Path $KeyDir "id_ecdsa"
+$PubKey  = Join-Path $KeyDir "id_ecdsa.pub"
+
+function ConvertTo-Pem ([byte[]]$der, [string]$label) {
+    $b64 = [Convert]::ToBase64String($der)
+    $lines = for ($i = 0; $i -lt $b64.Length; $i += 64) { $b64.Substring($i, [Math]::Min(64, $b64.Length - $i)) }
+    return "-----BEGIN $label-----`n" + ($lines -join "`n") + "`n-----END $label-----`n"
+}
+
+function Initialize-Keys {
+    if ((Test-Path $PrivKey) -and (Test-Path $PubKey)) { return }
+    Info "Tworze klucze serwera (raz)..."
+    New-Item -ItemType Directory -Force $KeyDir | Out-Null
+    Add-Type -AssemblyName System.Core
+    $params = New-Object System.Security.Cryptography.CngKeyCreationParameters
+    $params.ExportPolicy = [System.Security.Cryptography.CngExportPolicies]::AllowPlaintextExport
+    $key = [System.Security.Cryptography.CngKey]::Create([System.Security.Cryptography.CngAlgorithm]::ECDsaP256, $null, $params)
+    try {
+        $pkcs8 = $key.Export([System.Security.Cryptography.CngKeyBlobFormat]::Pkcs8PrivateBlob)
+        $blob = $key.Export([System.Security.Cryptography.CngKeyBlobFormat]::EccPublicBlob)   # 8 bajtow naglowka + X + Y
+        # SubjectPublicKeyInfo dla P-256: stala czesc ASN.1 + punkt nieskompresowany (04 X Y)
+        $prefix = [byte[]](0x30,0x59,0x30,0x13,0x06,0x07,0x2A,0x86,0x48,0xCE,0x3D,0x02,0x01,0x06,0x08,0x2A,0x86,0x48,0xCE,0x3D,0x03,0x01,0x07,0x03,0x42,0x00,0x04)
+        $spki = $prefix + $blob[8..71]
+        [IO.File]::WriteAllText($PrivKey, (ConvertTo-Pem $pkcs8 "PRIVATE KEY"), [Text.Encoding]::ASCII)
+        [IO.File]::WriteAllText($PubKey, (ConvertTo-Pem ([byte[]]$spki) "PUBLIC KEY"), [Text.Encoding]::ASCII)
+    } finally { $key.Dispose() }
+    Ok "Klucze serwera zapisane w: $KeyDir (kopia zapasowa razem z folderem 'dane')"
+}
+
 # Uruchamia serwer w osobnym oknie (zamkniecie okna = wylaczenie serwera).
 function Start-Stdb {
     if (Test-Port $Port) { Ok "Serwer juz dziala na porcie $Port."; return }
     New-Item -ItemType Directory -Force $DataDir | Out-Null
+    Initialize-Keys
     Info "Uruchamiam serwer w nowym oknie..."
-    $cmd = "`$host.UI.RawUI.WindowTitle = 'Serwer MojeMMO (nie zamykaj)'; & '$StdbServer' start --data-dir '$DataDir' --listen-addr '0.0.0.0:$Port'"
+    $cmd = "`$host.UI.RawUI.WindowTitle = 'Serwer MojeMMO (nie zamykaj)'; & '$StdbServer' start --data-dir '$DataDir' --listen-addr '0.0.0.0:$Port' --jwt-priv-key-path '$PrivKey' --jwt-pub-key-path '$PubKey'"
     Start-Process powershell -ArgumentList @("-NoExit", "-NoProfile", "-Command", $cmd)
     if (-not (Wait-ForPort $Port 60)) { Fail "Serwer nie wstal w ciagu 60 sekund. Sprawdz okno 'Serwer MojeMMO'." }
     Ok "Serwer dziala."

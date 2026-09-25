@@ -45,6 +45,7 @@ więc sama zmiana w routerze domowym nie wystarczy.
 |---|---|
 | `Uruchom-serwer.bat` (albo skrót na pulpicie) | uruchamia serwer i wgrywa aktualny moduł; **Enter** = postacie zostają, **W** = czyszczenie bazy |
 | `Zatrzymaj-serwer.bat` | wyłącza serwer (to samo co zamknięcie jego okna) |
+| `Dodaj-zapore.bat` | otwiera port 3000 w zaporze Windows (gdy instalacja nie dostała zgody administratora) |
 
 ## Aktualizacja gry na serwerze
 

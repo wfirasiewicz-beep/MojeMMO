@@ -2,4 +2,6 @@
 spacetimedb/
 # Baza danych gry na komputerze z serwerem
 dane/
+# Klucze tokenow graczy: tajne, tworzone na komputerze z serwerem
+klucze/
 *.log
