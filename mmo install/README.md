@@ -5,6 +5,9 @@ potwory, łup, ekwipunek widoczny na postaci. Gra łączy się z serwerem autora
 
 ## Instalacja (Windows 10/11, 64 bit)
 
+0. **Połącz się z siecią VPN gry (WireGuard).** Serwer ma adres `10.10.1.5` w sieci WireGuard,
+   więc najpierw zainstaluj [WireGuard](https://www.wireguard.com/install/) i zaimportuj plik
+   konfiguracji, który dostaniesz od autora gry. Bez aktywnego tunelu gra się nie połączy.
 1. Pobierz ten folder: na GitHubie **Code → Download ZIP**, potem rozpakuj ZIP.
 2. Kliknij dwa razy **`Zainstaluj.bat`**.
 3. Folder instalacji: wciśnij **Enter** (domyślnie `%LOCALAPPDATA%\MojeMMO`).
@@ -42,10 +45,9 @@ Twoja postać zostaje na serwerze.
 
 ## Gdy nie da się połączyć
 
+- Sprawdź, czy tunel WireGuard jest włączony (status „Active”).
 - Serwer może być akurat wyłączony: spróbuj później.
-- Sprawdź adres w `serwer.txt`.
-- Gracze w tej samej sieci domowej co serwer mogą potrzebować adresu lokalnego
-  serwera (np. `192.168.0.6`) zamiast adresu internetowego.
+- Sprawdź adres w `serwer.txt` (powinien być `10.10.1.5`).
 
 ## Wymagania
 

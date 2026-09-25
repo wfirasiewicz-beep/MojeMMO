@@ -20,7 +20,16 @@ Serwer działa, dopóki jego okno jest otwarte.
 
 ## Granie przez internet
 
-Żeby gracze spoza Twojej sieci domowej mogli się połączyć:
+**Obecny sposób: sieć WireGuard.** Komputer z serwerem ma w tunelu WireGuard adres `10.10.1.5`
+(sieć `10.10.0.0/16`); paczka gry jest zbudowana z tym adresem. Każdy gracz potrzebuje
+własnej konfiguracji WireGuard w tej sieci. Zapora Windows przepuszcza port 3000 na
+wszystkich kartach sieciowych (reguła z instalatora), więc także w tunelu.
+
+Przekierowanie portu na routerze (poniżej) działa tylko przy publicznym adresie IP.
+U obecnego dostawcy internetu komputer jest za kilkoma warstwami adresów prywatnych (CGNAT),
+więc sama zmiana w routerze domowym nie wystarczy.
+
+Żeby gracze spoza Twojej sieci domowej mogli się połączyć bez VPN (wymaga publicznego IP):
 1. Na routerze przekieruj port **TCP 3000** na komputer z serwerem
    (adres lokalny pokazuje okno serwera, np. `192.168.0.6`).
    Zwykle: panel routera → „Przekierowanie portów” / „Port forwarding” / „Serwer wirtualny”.

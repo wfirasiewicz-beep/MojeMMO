@@ -6,6 +6,7 @@ Pixelartowe MMO w stylu klasycznego WoW: walka tab-target, kreator postaci
 
 ## Jak zagrać (Windows 10/11, 64 bit)
 
+0. Włącz tunel **WireGuard** z konfiguracją od autora gry (serwer ma adres `10.10.1.5` w tej sieci VPN).
 1. Kliknij zielony przycisk **Code → Download ZIP** u góry tej strony i rozpakuj pobrany plik.
 2. Wejdź do folderu **`mmo install`** i kliknij dwa razy **`Zainstaluj.bat`**.
 3. Na oba pytania wciśnij **Enter** (domyślny folder i adres serwera).
