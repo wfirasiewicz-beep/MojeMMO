@@ -1,0 +1,5 @@
+# Pobierane przy instalacji (nie trzymamy w repozytorium)
+spacetimedb/
+# Baza danych gry na komputerze z serwerem
+dane/
+*.log
