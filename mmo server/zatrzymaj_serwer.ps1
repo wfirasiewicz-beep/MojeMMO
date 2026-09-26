@@ -1,4 +1,4 @@
-# Zatrzymuje serwer MojeMMO (to samo co zamkniecie jego okna).
+# Zatrzymuje serwer MojeMMO (dziala w tle, bez okna).
 . (Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) "serwer_wspolne.ps1")
 
 $procs = Get-Process spacetimedb-standalone -ErrorAction SilentlyContinue | Where-Object { $_.Path -eq $StdbServer }

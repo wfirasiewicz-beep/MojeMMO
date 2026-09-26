@@ -58,4 +58,4 @@ if ((Read-Host "Uruchamiac serwer automatycznie po wlaczeniu komputera? [T/N]") 
 }
 
 Show-Addresses
-Ok "Instalacja zakonczona. Serwer dziala, dopoki jest otwarte jego okno."
+Ok "Instalacja zakonczona. Serwer dziala w tle; wylaczysz go plikiem Zatrzymaj-serwer.bat."

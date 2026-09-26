@@ -23,4 +23,4 @@ if ($Auto) {
     Publish-Module $Wyczysc
 }
 Show-Addresses
-Ok "Serwer dziala, dopoki jest otwarte okno 'Serwer MojeMMO'."
+Ok "Serwer dziala w tle (bez okna). Wylaczysz go plikiem Zatrzymaj-serwer.bat."

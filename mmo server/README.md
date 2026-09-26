@@ -10,13 +10,14 @@ z nim grą z folderu **mmo install**.
 2. Kliknij dwa razy **`Zainstaluj-serwer.bat`**. Skrypt:
    - pobierze SpacetimeDB **2.10.1** (oficjalne wydanie z GitHuba, ok. 45 MB) do podfolderu `spacetimedb`,
    - poprosi o zgodę administratora i otworzy w zaporze Windows **port 3000**,
-   - uruchomi serwer w osobnym oknie **„Serwer MojeMMO (nie zamykaj)”**,
+   - uruchomi serwer w tle, bez okna (dziennik w `dane\serwer.log`),
    - wgra moduł gry (`modul\mojemmo.wasm`),
    - zrobi skrót **Serwer MojeMMO** na pulpicie,
    - zapyta, czy uruchamiać serwer **automatycznie po włączeniu komputera**,
    - pokaże adresy dla graczy: lokalny (sieć domowa) i internetowy.
 
-Serwer działa, dopóki jego okno jest otwarte.
+Serwer działa w tle, dopóki go nie wyłączysz (`Zatrzymaj-serwer.bat`) albo nie wyłączysz komputera.
+Nie ma okna konsoli, więc nie da się go przypadkiem wstrzymać kliknięciem.
 
 ## Granie przez internet
 
@@ -31,7 +32,7 @@ więc sama zmiana w routerze domowym nie wystarczy.
 
 Żeby gracze spoza Twojej sieci domowej mogli się połączyć bez VPN (wymaga publicznego IP):
 1. Na routerze przekieruj port **TCP 3000** na komputer z serwerem
-   (adres lokalny pokazuje okno serwera, np. `192.168.0.6`).
+   (adres lokalny pokazuje `Uruchom-serwer.bat`, np. `192.168.0.9`).
    Zwykle: panel routera → „Przekierowanie portów” / „Port forwarding” / „Serwer wirtualny”.
 2. Najlepiej ustaw w routerze stały adres lokalny dla tego komputera („rezerwacja DHCP”),
    żeby przekierowanie nie przestało działać po restarcie.
@@ -44,7 +45,7 @@ więc sama zmiana w routerze domowym nie wystarczy.
 | Plik | Co robi |
 |---|---|
 | `Uruchom-serwer.bat` (albo skrót na pulpicie) | uruchamia serwer i wgrywa aktualny moduł; **Enter** = postacie zostają, **W** = czyszczenie bazy |
-| `Zatrzymaj-serwer.bat` | wyłącza serwer (to samo co zamknięcie jego okna) |
+| `Zatrzymaj-serwer.bat` | wyłącza serwer działający w tle |
 | `Dodaj-zapore.bat` | otwiera port 3000 w zaporze Windows (gdy instalacja nie dostała zgody administratora) |
 
 ## Aktualizacja gry na serwerze
