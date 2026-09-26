@@ -81,16 +81,24 @@ function Initialize-Keys {
     Ok "Klucze serwera zapisane w: $KeyDir (kopia zapasowa razem z folderem 'dane')"
 }
 
-# Uruchamia serwer w osobnym oknie (zamkniecie okna = wylaczenie serwera).
+# Uruchamia serwer w tle, BEZ okna konsoli: dziennik trafia do plikow dane\serwer.log i dane\serwer_bledy.log.
+# (Okno konsoli bylo pulapka: klikniecie w nie wlacza w Windows "Szybka edycje" i wstrzymuje serwer
+#  przy najblizszym wypisaniu tekstu; serwer stal wtedy, az ktos wcisnal Esc.)
+# Serwer dziala, dopoki nie uzyjesz Zatrzymaj-serwer.bat albo nie wylaczysz komputera.
+$LogFile = Join-Path $DataDir "serwer.log"
+$ErrFile = Join-Path $DataDir "serwer_bledy.log"
+
 function Start-Stdb {
     if (Test-Port $Port) { Ok "Serwer juz dziala na porcie $Port."; return }
     New-Item -ItemType Directory -Force $DataDir | Out-Null
     Initialize-Keys
-    Info "Uruchamiam serwer w nowym oknie..."
-    $cmd = "`$host.UI.RawUI.WindowTitle = 'Serwer MojeMMO (nie zamykaj)'; & '$StdbServer' start --data-dir '$DataDir' --listen-addr '0.0.0.0:$Port' --jwt-priv-key-path '$PrivKey' --jwt-pub-key-path '$PubKey'"
-    Start-Process powershell -ArgumentList @("-NoExit", "-NoProfile", "-Command", $cmd)
-    if (-not (Wait-ForPort $Port 60)) { Fail "Serwer nie wstal w ciagu 60 sekund. Sprawdz okno 'Serwer MojeMMO'." }
-    Ok "Serwer dziala."
+    Info "Uruchamiam serwer w tle (dziennik: $LogFile)..."
+    $srvArgs = @("start", "--data-dir", "`"$DataDir`"", "--listen-addr", "0.0.0.0:$Port",
+                 "--jwt-priv-key-path", "`"$PrivKey`"", "--jwt-pub-key-path", "`"$PubKey`"")
+    Start-Process -FilePath $StdbServer -ArgumentList $srvArgs -WindowStyle Hidden `
+        -RedirectStandardOutput $LogFile -RedirectStandardError $ErrFile | Out-Null
+    if (-not (Wait-ForPort $Port 60)) { Fail "Serwer nie wstal w ciagu 60 sekund. Zobacz: $ErrFile" }
+    Ok "Serwer dziala (w tle, bez okna)."
 }
 
 # Wgrywa (albo aktualizuje) modul gry. $wipe = czysci baze (np. po duzej zmianie tabel).
